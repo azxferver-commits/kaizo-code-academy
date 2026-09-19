@@ -1,0 +1,79 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "academy-v1.js"
+      - "manifest.webmanifest"
+      - "icon.svg"
+      - "sw.js"
+      - "package.json"
+      - "capacitor.config.json"
+      - "scripts/**"
+      - ".github/workflows/android-apk.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Build KAIZO Code Academy APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build web bundle
+        run: npm run build:web
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Sync web app into Android
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Prepare APK output
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/debug/app-debug.apk dist/KAIZO-Code-Academy.apk
+          sha256sum dist/KAIZO-Code-Academy.apk > dist/KAIZO-Code-Academy.sha256.txt
+          ls -lh dist/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: KAIZO-Code-Academy-APK
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
