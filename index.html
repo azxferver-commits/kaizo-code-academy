@@ -55,7 +55,7 @@ textarea.codeinput{width:100%;min-height:150px;resize:vertical;border:1px solid 
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
-</head>
+<link rel="manifest" href="./manifest.webmanifest">\n<link rel="icon" href="./icon.svg" type="image/svg+xml">\n</head>
 <body>
 <div class="app">
   <aside class="desktopside" aria-label="Navegación de escritorio">
@@ -178,5 +178,5 @@ function selectLab(name){$$('.labtab').forEach(b=>b.classList.toggle('active',b.
 $$('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));$$('[data-go]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.go)));$('#continueBtn').onclick=()=>{showView('learn');const idx=lessons.findIndex((l,i)=>unlocked(i)&&!state.completed.includes(l.id));openLesson(idx<0?lessons.length-1:idx)};$('#resetBtn').onclick=()=>{if(confirm('¿Quieres reiniciar todo tu progreso de la escuela?')){state={completed:[],xp:0};save();current=null;$('#lessonPanel').classList.remove('open');$('#lessonPanel').innerHTML='';renderAll();showView('home');toast('Progreso reiniciado')}};$$('.labtab').forEach(b=>b.addEventListener('click',()=>selectLab(b.dataset.labtab)));$('#runCodeBtn').onclick=runLab;$('#resetLabBtn').onclick=()=>{if(confirm('¿Restaurar el laboratorio de ejemplo?')){$('#htmlEditor').value=defaultLab.html;$('#cssEditor').value=defaultLab.css;$('#jsEditor').value=defaultLab.js;runLab();toast('Laboratorio restaurado')}};window.addEventListener('resize',()=>{if(window.innerWidth>=1000){document.querySelector('.labpane[data-pane="preview"]').classList.add('active')}});
 renderAll();setupLab();
 </script>
-</body>
+<script src="./academy-v1.js"></script>\n</body>
 </html>
