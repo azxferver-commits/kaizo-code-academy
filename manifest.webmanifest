@@ -1,0 +1,19 @@
+{
+  "name": "KAIZO Code Academy",
+  "short_name": "KAIZO Code",
+  "description": "Escuela interactiva para aprender programación paso a paso.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d14",
+  "theme_color": "#0b0d14",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
