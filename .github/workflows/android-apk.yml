@@ -10,6 +10,7 @@ on:
       - "academy-v1.js"
       - "manifest.webmanifest"
       - "icon.svg"
+      - "assets/app-icon.webp.b64"
       - "sw.js"
       - "package.json"
       - "capacitor.config.json"
@@ -55,6 +56,20 @@ jobs:
 
       - name: Sync web app into Android
         run: npx cap sync android
+
+      - name: Apply KAIZO launcher icon
+        run: |
+          mkdir -p android/app/src/main/res/drawable-nodpi
+          base64 -d assets/app-icon.webp.b64 > android/app/src/main/res/drawable-nodpi/kaizo_app_icon.webp
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+          s = s.replace('android:icon="@mipmap/ic_launcher"', 'android:icon="@drawable/kaizo_app_icon"')
+          s = s.replace('android:roundIcon="@mipmap/ic_launcher_round"', 'android:roundIcon="@drawable/kaizo_app_icon"')
+          p.write_text(s)
+          print("KAIZO launcher icon applied")
+          PY
 
       - name: Build debug APK
         working-directory: android
